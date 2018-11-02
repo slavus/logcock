@@ -31,19 +31,40 @@ public class FilesController {
     return "redirect:/b/";
   }
 
-  @GetMapping("/b/{*webPath}")
-  public String browseFolder(@PathVariable String webPath, Model model) {
-    String path = properties.getBasePath() + File.separator + webPath;
-    model.addAttribute("basePath", properties.getBasePath());
-    model.addAttribute("filesInDir", fileList(path));
-    model.addAttribute("breadcrumbs", breadcrumbs(path));
+  @GetMapping("/b")
+  public String browseFolder(Model model) {
+    model.addAttribute("basePath", "/");
+    model.addAttribute("baseId", "");
+    model.addAttribute("filesInDir", properties.getFolders());
+    model.addAttribute("breadcrumbs", new ArrayList<>());
     return "index";
   }
 
-  private List<File> breadcrumbs(String path) {
+  @GetMapping("/b/{id}/{*webPath}")
+  public String browseFolder(@PathVariable Integer id, @PathVariable String webPath, Model model) {
+    String basePath = properties.getFolders().get(id).getBasePath();
+
+    String path = basePath + File.separator + webPath;
+    model.addAttribute("basePath", basePath);
+    model.addAttribute("baseId", id);
+    model.addAttribute("filesInDir", fileList(path));
+    model.addAttribute("breadcrumbs", breadcrumbs(path, basePath));
+    return "index";
+  }
+
+  @GetMapping("/d/{id}/{*webPath}")
+  @ResponseBody
+  private Mono<Resource> downloadFile(@PathVariable Integer id, @PathVariable String webPath, Model model) {
+    String basePath = properties.getFolders().get(id).getBasePath();
+    String filePath = basePath + File.separator + webPath;
+    return Mono.just(new FileSystemResource(filePath));
+  }
+
+
+  private List<File> breadcrumbs(String path, String basePath) {
     final List<File> crumbs = new ArrayList<>();
     File f = new File(path);
-    while(StringUtils.startsWith(f.getAbsolutePath(), properties.getBasePath())) {
+    while(StringUtils.startsWith(f.getAbsolutePath(), basePath)) {
       crumbs.add(f);
       f = f.getParentFile();
     }
@@ -51,12 +72,6 @@ public class FilesController {
     return crumbs;
   }
 
-  @GetMapping("/d/{*webPath}")
-  @ResponseBody
-  private Mono<Resource> downloadFile(@PathVariable String webPath, Model model) {
-    String filePath = properties.getBasePath() + File.separator + webPath;
-    return Mono.just(new FileSystemResource(filePath));
-  }
 
   public static List<File> fileList(String path) {
     File dir = new File(path);
