@@ -6,10 +6,16 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import net.slavus.logcock.LogcockProperties;
+import net.slavus.logcock.LogcockProperties.HostedFolder;
 
 @Component
 public class Files {
+  @Autowired
+  LogcockProperties logcockProperties;
 
   /**
    * Retutrns Posix style file permissions
@@ -63,4 +69,15 @@ public class Files {
     String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
     return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
+
+
+
+  public String linkPath(HostedFolder folder, String basePath) {
+    return logcockProperties.getFolders().indexOf(folder) + "/";
+  }
+  public String type(HostedFolder file) { return ""; }
+  public Date lastModified(HostedFolder file) { return new Date(); }
+  public String size(HostedFolder file) { return ""; }
+  public String owner(HostedFolder file) { return ""; }
+  public String permission(HostedFolder file) { return ""; }
 }
