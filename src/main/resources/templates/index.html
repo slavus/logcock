@@ -54,7 +54,7 @@
 	                    </thead>
 	                    <tbody>
 	                        <tr th:each="file : ${filesInDir}">
-	                            <td>
+	                            <td class="is-size-7">
 		                            <a href="#" class="item"
 		                                th:href="@{${file.isDirectory()} ?
 		                                    '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
@@ -65,7 +65,7 @@
 		                            </a>
 	                            </td>
 	                            <td th:text="${@files.size(file)}">Size</td>
-                              <td th:text="${#dates.format(@files.lastModified(file))}">Modify time</td>
+                              <td class="is-size-7" th:text="${#dates.format(@files.lastModified(file),'yyyy.MM.dd hh:mm:ss')}">Modify time</td>
                               <td th:text="${@files.owner(file)}">Owner</td>
                               <td th:text=${@files.permission(file)}>Permission</td>
                               <td th:text=${@files.type(file)}>Type</td>
