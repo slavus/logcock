@@ -30,10 +30,10 @@
     </div>
 </nav>
 <div class="container">
-<nav class="breadcrumb" aria-label="breadcrumbs">
+<nav class="breadcrumb is-small" aria-label="breadcrumbs">
   <ul>
     <li th:each="bc,iterStat : ${breadcrumbs}">
-        <a th:href="'/b/' + ${bc}" th:text="${bc}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
+        <a th:href=" '/b' + ${@files.linkPath(bc, basePath)}" th:text="${bc.name}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
       </li>
   </ul>
 </nav>
@@ -57,7 +57,7 @@
 	                            <td>
 		                            <a href="#" class="item"
 		                                th:href="@{${file.isDirectory()} ?
-		                                    '/b' + ${T(org.apache.commons.lang3.StringUtils).removeStart(file.path, basePath)}
+		                                    '/b' + ${@files.linkPath(file, basePath)}
 		                                  : '/d' + ${T(org.apache.commons.lang3.StringUtils).removeStart(file.path, basePath)}}"
 		                            >
 		                                <span class="icon"><i class="fa" th:classappend="${file.isDirectory()} ? fa-folder : fa-file"></i></span>

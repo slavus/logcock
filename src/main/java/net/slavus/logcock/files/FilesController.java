@@ -3,9 +3,11 @@ package net.slavus.logcock.files;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -34,15 +36,19 @@ public class FilesController {
     String path = properties.getBasePath() + File.separator + webPath;
     model.addAttribute("basePath", properties.getBasePath());
     model.addAttribute("filesInDir", fileList(path));
-    model.addAttribute("breadcrumbs", breadcrumbs(webPath));
+    model.addAttribute("breadcrumbs", breadcrumbs(path));
     return "index";
   }
 
-  private List<String> breadcrumbs(String webPath) {
-    String[] paths = webPath.split(File.separator);
-    List<String> asList = new ArrayList<>(Arrays.asList(paths));
-    asList.add(0, ".");
-    return asList;
+  private List<File> breadcrumbs(String path) {
+    final List<File> crumbs = new ArrayList<>();
+    File f = new File(path);
+    while(StringUtils.startsWith(f.getAbsolutePath(), properties.getBasePath())) {
+      crumbs.add(f);
+      f = f.getParentFile();
+    }
+    Collections.reverse(crumbs);
+    return crumbs;
   }
 
   @GetMapping("/d/{*webPath}")

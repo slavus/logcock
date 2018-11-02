@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,21 +27,23 @@ public class Files {
     }
   }
 
-  public static String owner(File file) {
+  public String owner(File file) {
     try {
       return java.nio.file.Files.getOwner(file.toPath()).getName();
     } catch (IOException e) {
       return "?????";
     }
   }
-  public static String size(File file) {
+
+  public String size(File file) {
     return humanReadableByteCount(file.length(), false);
   }
 
-  public static Date lastModified(File file) {
+  public Date lastModified(File file) {
     return new Date(file.lastModified());
   }
-  public static String type(File file) {
+
+  public String type(File file) {
     try {
       return java.nio.file.Files.probeContentType(file.toPath());
     } catch (IOException e) {
@@ -48,7 +51,11 @@ public class Files {
     }
   }
 
-  public static String humanReadableByteCount(long bytes, boolean si) {
+  public String linkPath(File file, String basePath) {
+    return StringUtils.removeStart(file.getPath(), basePath);
+  }
+
+  public String humanReadableByteCount(long bytes, boolean si) {
     int unit = si ? 1000 : 1024;
     if (bytes < unit)
       return bytes + " B";
