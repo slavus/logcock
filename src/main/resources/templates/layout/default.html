@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content, pageJs)" lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Logcock</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link rel="stylesheet" href="/webjars/bulma/css/bulma.min.css" />
+    <script th:src="@{/webjars/turbolinks/dist/turbolinks.js}"></script>
+</head>
+
+<body>
+<nav class="navbar has-shadow">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" th:href="@{/}">
+                <span class="name">Log</span> <span class="icon"><i class="fa fa-kiwi-bird"></i></span>
+            </a>
+
+            <div class="navbar-burger burger" data-target="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+
+    </div>
+</nav>
+<div class="container" th:insert="${content}">
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="content has-text-centered">
+
+        </div>
+    </div>
+</footer>
+</body>
+<th:block th:fragment="pageJs" >
+    <th:block th:replace="${pageJs}"></th:block>
+</th:block>
+</html>
