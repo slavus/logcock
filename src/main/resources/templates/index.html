@@ -1,35 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Logcock</title>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout/default :: layout('Logcock - file browser', ~{::#content}, ~{})">
+<div id="content">
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-		<link rel="stylesheet" href="/webjars/bulma/css/bulma.min.css" />
-		<script th:src="@{/webjars/turbolinks/dist/turbolinks.js}"></script>
-</head>
-
-<body>
-<nav class="navbar has-shadow">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item" th:href="@{/}">
-                <span class="name">Log</span> <span class="icon"><i class="fa fa-kiwi-bird"></i></span>
-            </a>
-
-            <div class="navbar-burger burger" data-target="navMenu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-
-    </div>
-</nav>
-<div class="container">
 <nav class="breadcrumb is-small" aria-label="breadcrumbs">
   <ul>
     <li th:each="bc,iterStat : ${breadcrumbs}">
@@ -37,54 +9,55 @@
       </li>
   </ul>
 </nav>
-	<div class="columns" id="logdog-app">
-	    <div class="column is-12 is-fullheight">
-	        <div>
-	            <div class="main">
-	                <table class="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-	                    <thead>
-	                        <tr>
-	                            <td>Filename</td>
-	                            <td>Size</td>
-	                            <td>Modify time</td>
-	                            <td>Owner</td>
-	                            <td>Permission</td>
-	                            <td>Type</td>
-	                        </tr>
-	                    </thead>
-	                    <tbody>
-	                        <tr th:each="file : ${filesInDir}">
-	                            <td class="is-size-7">
-		                            <a href="#" class="item"
-		                                th:href="@{${file.isDirectory()} ?
-		                                    '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
-		                                  : '/d/' + ${baseId} + ${@files.linkPath(file, basePath)}}"
-		                            >
-		                                <span class="icon"><i class="fa" th:classappend="${file.isDirectory()} ? fa-folder : fa-file"></i></span>
-		                                <span class="name" th:text="${file.name}">filename</span>
-		                            </a>
-	                            </td>
-	                            <td th:text="${@files.size(file)}">Size</td>
+  <div class="columns" id="logdog-app">
+      <div class="column is-12 is-fullheight">
+          <div>
+              <div class="main">
+                  <table class="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                      <thead>
+                          <tr>
+                              <td>Actions</td>
+                              <td>Filename</td>
+                              <td>Size</td>
+                              <td>Modify time</td>
+                              <td>Owner</td>
+                              <td>Permission</td>
+                              <td>Type</td>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr th:each="file : ${filesInDir}">
+                             <td>
+                               <a class="button is-small" >Download</a>
+                               <a class="button is-small"  th:href="@{${file.isDirectory()} ?
+                                        '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
+                                      : '/t/' + ${baseId} + ${@files.linkPath(file, basePath)}}">Tail</a>
+                             </td>
+
+                              <td class="is-size-7">
+                                <a href="#" class="item"
+                                    th:href="@{${file.isDirectory()} ?
+                                        '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
+                                      : '/d/' + ${baseId} + ${@files.linkPath(file, basePath)}}"
+                                >
+                                    <span class="icon"><i class="fa" th:classappend="${file.isDirectory()} ? fa-folder : fa-file"></i></span>
+                                    <span class="name" th:text="${file.name}">filename</span>
+                                </a>
+                              </td>
+                              <td th:text="${@files.size(file)}">Size</td>
                               <td class="is-size-7" th:text="${#dates.format(@files.lastModified(file),'yyyy.MM.dd hh:mm:ss')}">Modify time</td>
                               <td th:text="${@files.owner(file)}">Owner</td>
                               <td th:text=${@files.permission(file)}>Permission</td>
                               <td th:text=${@files.type(file)}>Type</td>
-	                        </tr>
+                          </tr>
 
-	                    </tbody>
-	                </table>
+                      </tbody>
+                  </table>
 
-	            </div>
-	        </div>
-	    </div>
-	</div>
+              </div>
+          </div>
+      </div>
+  </div>
+
 </div>
-<footer class="footer">
-    <div class="container">
-        <div class="content has-text-centered">
-
-        </div>
-    </div>
-</footer>
-
 </html>

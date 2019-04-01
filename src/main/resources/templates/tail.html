@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout/default :: layout('Tail page', ~{::#content}, ~{})">
+<div id="content">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+
+  <h1>Tailer :)</h1>
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+
+  <script th:src="@{/webjars/stimulus/dist/stimulus.umd.js}"></script>
+  <script th:src="@{/js/tail/tail-controller.js}"></script>
+
+  <script type="text/javascript" th:inline="javascript">
+	  var wsPath = /*[[@{${wsPath}}]]*/ "filepath";
+	  console.log(wsPath);
+  </script>
+
+  <div data-controller="tail">
+     <button id="connect" class="btn btn-default" data-action="click->tail#tailIt">Connect</button>
+    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect</button>
+
+     <pre data-target="tail.file" id="file" style="height: 45rem;" >a</pre>
+  </div>
+</div>
+
+</html>
