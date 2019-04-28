@@ -51,6 +51,19 @@ public class FileTailer{
       sink.onCancel(onExit);
       sink.onDispose(onExit);
 
+      //read initial lines
+      try {
+        List<String> readLastLines = readLastLines();
+        if (!readLastLines.isEmpty()) {
+          String lines = readLastLines.stream().collect(Collectors.joining("\n"));
+          LOGGER.debug("New lines: {}", lines);
+          sink.next(lines);
+        }
+
+      } catch (IOException e) {
+        sink.error(e);
+      }
+
       executorService.execute(() -> {
         try {
           watchFile(sink);

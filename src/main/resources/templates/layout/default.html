@@ -8,7 +8,8 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link rel="stylesheet" href="/webjars/bulma/css/bulma.min.css" />
-    <script th:src="@{/webjars/turbolinks/dist/turbolinks.js}"></script>
+
+
 </head>
 
 <body>
@@ -42,6 +43,9 @@
 </footer>
 </body>
 <th:block th:fragment="pageJs" >
+    <script th:src="@{/webjarsjs}"></script>
+    <script th:src="@{/webjars/requirejs/require.min.js}"></script>
+    <script> requirejs([ '/js/app.js' ], function() { }); </script>
     <th:block th:replace="${pageJs}"></th:block>
 </th:block>
 </html>

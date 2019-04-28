@@ -14,8 +14,6 @@ import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAd
 @Configuration
 public class WebSocketConfig {
 
-
-
   @Autowired
   private FileTailControlerWSHandler tailWebSocketHandler;
 

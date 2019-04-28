@@ -48,7 +48,7 @@ public class FileTailControlerWSHandler implements WebSocketHandler {
 
   @Override
   public Mono<Void> handle(WebSocketSession session) {
-    LOGGER.info("Open websocket conection");
+    LOGGER.info("Open websocket conection...");
 
     UriTemplate template = new UriTemplate("/tail/{id}/{path:.+}");
     Map<String, String> parameters = template.match(
@@ -60,6 +60,15 @@ public class FileTailControlerWSHandler implements WebSocketHandler {
     Flux<String> fileTailFlux = new FileTailer(tailExecutorService, filename)
         .fileTailFlux();
 
-    return session.send(fileTailFlux.map(session::textMessage));
+    Mono<Void> input = session.receive()
+        .doOnComplete(() -> {
+          LOGGER.info("Close Websocket conection...");
+          session.close();
+        })
+        .then();
+
+    Mono<Void> output = session.send(fileTailFlux.map(session::textMessage));
+
+    return Mono.zip(input, output).then();
   }
 }
