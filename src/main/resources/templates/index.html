@@ -28,10 +28,19 @@
                       <tbody>
                           <tr th:each="file : ${filesInDir}">
                              <td>
-                               <a class="button is-small" >Download</a>
+                               <a href="#" class="button is-small" th:disabled="${file.isDirectory()}"
+                                    th:href="@{${file.isDirectory()} ?
+                                        '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
+                                      : '/d/' + ${baseId} + ${@files.linkPath(file, basePath)}}"
+                                ><span class="icon has-text-info"> <i class="fas fa-download"></i> </span>
+                                </a>
+
                                <a class="button is-small"  th:href="@{${file.isDirectory()} ?
                                         '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
-                                      : '/t/' + ${baseId} + ${@files.linkPath(file, basePath)}}">Tail</a>
+                                      : '/t/' + ${baseId} + ${@files.linkPath(file, basePath)}}"
+                                ><span class="icon has-text-info"> <i class="fas fa-eye"></i> </span>
+
+                                      </a>
                              </td>
 
                               <td class="is-size-7">
@@ -47,8 +56,8 @@
                               <td th:text="${@files.size(file)}">Size</td>
                               <td class="is-size-7" th:text="${#dates.format(@files.lastModified(file),'yyyy.MM.dd hh:mm:ss')}">Modify time</td>
                               <td th:text="${@files.owner(file)}">Owner</td>
-                              <td th:text=${@files.permission(file)}>Permission</td>
-                              <td th:text=${@files.type(file)}>Type</td>
+                              <td th:text="${@files.permission(file)}">Permission</td>
+                              <td th:text="${@files.type(file)}">Type</td>
                           </tr>
 
                       </tbody>
