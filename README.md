@@ -1,4 +1,6 @@
 # Logcock - app for viewing logs and other files
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fslavus%2Flogcock.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fslavus%2Flogcock?ref=badge_shield)
+
 
 Logcock is web app thaht you can use with following features:
  * file browsing
@@ -17,3 +19,7 @@ Tehnology stack:
  - RequireJS
  - Turbolinks
  - Stimulus
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fslavus%2Flogcock.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fslavus%2Flogcock?ref=badge_large)
