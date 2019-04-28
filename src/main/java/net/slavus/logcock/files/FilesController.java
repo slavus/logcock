@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import net.slavus.logcock.LogcockProperties;
 import reactor.core.publisher.Mono;
 
+/**
+ * @author slavus
+ *
+ */
 @Controller
 public class FilesController {
 
@@ -54,10 +59,16 @@ public class FilesController {
 
   @GetMapping("/d/{id}/{*webPath}")
   @ResponseBody
-  private Mono<Resource> downloadFile(@PathVariable Integer id, @PathVariable String webPath, Model model) {
+  private Mono<ResponseEntity<Resource>> downloadFile(@PathVariable Integer id, @PathVariable String webPath, Model model) {
     String basePath = properties.getFolders().get(id).getBasePath();
     String filePath = basePath + File.separator + webPath;
-    return Mono.just(new FileSystemResource(filePath));
+    FileSystemResource fileSystemResource = new FileSystemResource(filePath);
+    return Mono.just(ResponseEntity
+        .ok()
+        .header("Content-Type", "application/octet-stream")
+        .header("Content-Disposition", "attachment; filename=" + fileSystemResource.getFilename())
+        .body(fileSystemResource)
+       );
   }
 
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="layout/default :: layout('Tail page', ~{::#content}, ~{::#pageJs})">
+<div id="content">
+	<noscript>
+		<h2 style="color: #ff0000">Seems your browser doesn't support
+			Javascript! Websocket relies on Javascript being enabled. Please
+			enable Javascript and reload this page!</h2>
+	</noscript>
+
+	<script type="text/javascript" th:inline="javascript">
+		var wsPath = /*[[@{${wsPath}}]]*/"filepath";
+		var wsUrl = /*[[@{${wsPath}}]]*/"filepath";
+		console.log(wsPath);
+	</script>
+	<!-- <script th:src="@{/js/tail/tail-controller.js}"></script> -->
+
+
+
+	<div data-controller="tailer">
+		<button class="button is-small is-inverted" data-target="tailer.pause" data-action="click->tailer#toggle">Stop tailing</button>
+		<label class="checkbox"> <input id="follow" data-target="tailer.follow" type="checkbox" checked="checked">
+			Follow lines
+		</label>
+
+		<div data-target="tailer.output" id="output" style="height: 45rem;">
+	  </div>
+	</div>
+</div>
+
+<th:block id="pageJs">
+	<script>
+		requirejs([ '/js/tail/tailer.js' ], function() {
+		});
+	</script>
+</th:block>
+</html>
