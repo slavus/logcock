@@ -5,7 +5,7 @@
 <nav class="breadcrumb is-small" aria-label="breadcrumbs">
   <ul>
     <li th:each="bc,iterStat : ${breadcrumbs}">
-        <a th:href=" '/b/' + ${baseId} + ${@files.linkPath(bc, basePath)}" th:text="${bc.name}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
+        <a th:href=" @{'/b/' + ${baseId} + ${@files.linkPath(bc, basePath)}}" th:text="${bc.name}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
       </li>
   </ul>
 </nav>

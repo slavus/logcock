@@ -14,7 +14,7 @@ define(function (require) {
         }
 
         wsConnect() {
-            this.clientWebSocket = new WebSocket("ws://127.0.0.1:8080" + wsPath);
+            this.clientWebSocket = new WebSocket("ws://" + location.host  + wsPath);
             var follow = this.followTarget;
         	var pause = this.pauseTarget;
 
