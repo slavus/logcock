@@ -5,7 +5,7 @@
 <nav class="breadcrumb is-small" aria-label="breadcrumbs">
   <ul>
     <li th:each="bc,iterStat : ${breadcrumbs}">
-        <a th:href=" '/b/' + ${baseId} + ${@files.linkPath(bc, basePath)}" th:text="${bc.name}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
+        <a th:href=" @{'/b/' + ${baseId} + ${@files.linkPath(bc, basePath)}}" th:text="${bc.name}" th:classappend="${iterStat.last? 'is-active' : ''}">Bulma</a>
       </li>
   </ul>
 </nav>
@@ -13,16 +13,16 @@
       <div class="column is-12 is-fullheight">
           <div>
               <div class="main">
-                  <table class="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                  <table id="files" class="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                       <thead>
                           <tr>
-                              <td>Actions</td>
-                              <td>Filename</td>
-                              <td>Size</td>
-                              <td>Modify time</td>
-                              <td>Owner</td>
-                              <td>Permission</td>
-                              <td>Type</td>
+                              <th data-sort-method='none'>Actions</th>
+                              <th>Filename</th>
+                              <th>Size</th>
+                              <th data-sort-default aria-sort="ascending">Modify time </th>
+                              <th>Owner</th>
+                              <th>Permission</th>
+                              <th>Type</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -43,7 +43,7 @@
                                       </a>
                              </td>
 
-                              <td class="is-size-7">
+                              <td class="is-size-7" data-sort-column-key="price">
                                 <a href="#" class="item"
                                     th:href="@{${file.isDirectory()} ?
                                         '/b/' + ${baseId} + ${@files.linkPath(file, basePath)}
