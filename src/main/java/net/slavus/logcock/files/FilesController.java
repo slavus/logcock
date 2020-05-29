@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +56,15 @@ public class FilesController {
     model.addAttribute("filesInDir", fileList(path));
     model.addAttribute("breadcrumbs", breadcrumbs(path, basePath));
     return "index";
+  }
+
+  @ResponseBody
+  @GetMapping(path = "/b/{id}/{*webPath}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public List<File> jsonBrowseFolder(@PathVariable Integer id, @PathVariable String webPath, Model model) {
+    String basePath = properties.getFolders().get(id).getBasePath();
+
+    String path = basePath + File.separator + webPath;
+    return fileList(path);
   }
 
   @GetMapping("/d/{id}/{*webPath}")
