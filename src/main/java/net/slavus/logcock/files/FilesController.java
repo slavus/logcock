@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.slavus.logcock.LogcockProperties;
@@ -36,6 +37,9 @@ public class FilesController {
 
   @Autowired
   private ServerProperties serverProperties;
+
+  @Autowired
+  private MaskedDownloadService secretDownloadsService;
 
   @Autowired
   Files files;
@@ -96,6 +100,20 @@ public class FilesController {
         .header("Content-Disposition", "attachment; filename=" + fileSystemResource.getFilename())
         .body(fileSystemResource)
        );
+  }
+
+  @GetMapping("/md/{id}/{*webPath}")
+  @ResponseBody
+  private Mono<ResponseEntity<?>> downloadSplitFile(@PathVariable Integer id, @PathVariable String webPath, @RequestParam(defaultValue = "-1") Integer part, Model model) {
+    String basePath = properties.getFolders().get(id).getBasePath();
+    String filePath = basePath + File.separator + webPath;
+    if(part ==-1) {
+      MaskedDownloadInfo downloadInfo = secretDownloadsService.maskedDownloadInfo(filePath);
+      return Mono.just( ResponseEntity.ok(downloadInfo));
+    }
+
+    MaskedDownload maskedDownload = secretDownloadsService.maskedDownload(filePath, part);
+    return Mono.just(ResponseEntity.ok(maskedDownload));
   }
 
 

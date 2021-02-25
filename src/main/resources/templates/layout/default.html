@@ -44,6 +44,8 @@
 </footer>
 </body>
 <th:block th:fragment="pageJs" >
+<script src="https://cdn.jsdelivr.net/npm/web-streams-polyfill@2.0.2/dist/ponyfill.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/streamsaver@2.0.3/StreamSaver.min.js"></script>
     <script th:src="@{/webjarsjs}"></script>
     <script th:src="@{/webjars/requirejs/require.min.js}"></script>
     <script> requirejs([ '[[@{'/js/app.js'}]]' ], function() { }); </script>
