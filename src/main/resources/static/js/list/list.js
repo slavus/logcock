@@ -52,10 +52,9 @@ define(function(require) {
         var writer = fileStream.getWriter();
 
         var repeatDownload = function(r) {
-          var data = encode(atob(r.token));
+          var data = encode(r.token);
           data && writer.write(data)
           count++;
-
           if (count < parts) {
             console.log("Sad je " + count + " od " +parts)
             $.get(url + "?part=" + count, repeatDownload);
@@ -63,6 +62,7 @@ define(function(require) {
             console.log("zatvaram writera")
             writer.close();
           }
+
         }
         $.get(url + "?part=" + count, repeatDownload);
       });

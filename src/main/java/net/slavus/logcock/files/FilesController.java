@@ -112,7 +112,7 @@ public class FilesController {
       return Mono.just( ResponseEntity.ok(downloadInfo));
     }
 
-    MaskedDownload maskedDownload = secretDownloadsService.maskedDownload(filePath, part);
+    MaskedDownload maskedDownload = secretDownloadsService.maskedDownloadSplit(filePath, part);
     return Mono.just(ResponseEntity.ok(maskedDownload));
   }
 

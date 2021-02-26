@@ -2,6 +2,7 @@ package net.slavus.logcock.files;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Base64;
 
 import org.apache.commons.io.IOUtils;
@@ -12,27 +13,38 @@ import org.springframework.stereotype.Service;
 @Service
 public class MaskedDownloadService {
 
-  private static final int SPLIT_SIZE = 100*1024;
+  private static final int SPLIT_SIZE = 250*1024;
 
-  public MaskedDownload maskedDownload(String filePath, Integer part) {
-    FileSystemResource fileSystemResource = new FileSystemResource(filePath);
+  public MaskedDownload maskedDownloadSplit(String filePath, Integer part) {
+    FileSystemResource fileSystemResource = new FileSystemResource(filePath + ".b64");
     try {
+      byte[] buffer = new byte[SPLIT_SIZE];
       InputStream inputStream = fileSystemResource.getInputStream();
-      inputStream.skip(SPLIT_SIZE*part);
-      byte[] bytes = IOUtils.toByteArray(fileSystemResource.getInputStream());
-      String base64Encoded = Base64.getEncoder().encodeToString(bytes);
-      String token = base64Encoded.substring(part*SPLIT_SIZE, Math.min((part+1)*SPLIT_SIZE, base64Encoded.length()));
+      inputStream.skip(SPLIT_SIZE * part);
+      int len = IOUtils.read(inputStream, buffer);
+      String token = new String(buffer,0, len);
+      inputStream.close();
+      deleteB64AtEnd(part, fileSystemResource);
       return new MaskedDownload(token);
     } catch (IOException e) {
       return ExceptionUtils.rethrow(e);
     }
   }
-  public MaskedDownload maskedDownloadSplit(String filePath, Integer part) {
+
+  private void deleteB64AtEnd(Integer part, FileSystemResource fileSystemResource) {
+    System.out.println("SPLIT_SIZE*part:" + SPLIT_SIZE * part + " File len:" + fileSystemResource.getFile().length());
+    if ((SPLIT_SIZE * part+1) >= fileSystemResource.getFile().length()) {
+      fileSystemResource.getFile().delete();
+    }
+  }
+
+  public MaskedDownload maskedDownloadWhole(String filePath, Integer part) {
     FileSystemResource fileSystemResource = new FileSystemResource(filePath);
     try {
       byte[] bytes = IOUtils.toByteArray(fileSystemResource.getInputStream());
       String base64Encoded = Base64.getEncoder().encodeToString(bytes);
-      String token = base64Encoded.substring(part*SPLIT_SIZE, Math.min((part+1)*SPLIT_SIZE, base64Encoded.length()));
+      String token = base64Encoded.substring(part * SPLIT_SIZE,
+          Math.min((part + 1) * SPLIT_SIZE, base64Encoded.length()));
       return new MaskedDownload(token);
     } catch (IOException e) {
       return ExceptionUtils.rethrow(e);
@@ -40,15 +52,21 @@ public class MaskedDownloadService {
   }
 
   public MaskedDownloadInfo maskedDownloadInfo(String filePath) {
-    FileSystemResource fileSystemResource = new FileSystemResource(filePath);
-    try {
-      byte[] bytes = IOUtils.toByteArray(fileSystemResource.getInputStream());
-      String base64Encoded = Base64.getEncoder().encodeToString(bytes);
-      String base64Filename = Base64.getEncoder().encodeToString(fileSystemResource.getFilename().getBytes());
-
-      return new MaskedDownloadInfo(base64Filename,  base64Encoded.length(), (base64Encoded.length()/SPLIT_SIZE+1));
-    } catch (IOException e) {
-      return ExceptionUtils.rethrow(e);
+    FileSystemResource fileSystemResourceOrig = new FileSystemResource(filePath);
+    FileSystemResource fileSystemResourceB64 = new FileSystemResource(filePath + ".b64");
+    if (!fileSystemResourceB64.exists() || !fileSystemResourceOrig.getFilename().endsWith(".b64")) {
+      try {
+        fileSystemResourceB64.getFile().createNewFile();
+        OutputStream wrap = Base64.getEncoder().wrap(fileSystemResourceB64.getOutputStream());
+        IOUtils.copy(fileSystemResourceOrig.getInputStream(), wrap);
+      } catch (IOException e) {
+        return ExceptionUtils.rethrow(e);
+      }
     }
+
+    String base64Filename = Base64.getEncoder().encodeToString(fileSystemResourceB64.getFilename().getBytes());
+
+    return new MaskedDownloadInfo(base64Filename, fileSystemResourceB64.getFile().length(),
+        fileSystemResourceB64.getFile().length() / SPLIT_SIZE + 1);
   }
 }

@@ -3,8 +3,8 @@ package net.slavus.logcock.files;
 public class MaskedDownloadInfo {
 
   private String name;
-  private Integer size;
-  private Integer parts;
+  private Long size;
+  private Long parts;
 
   MaskedDownloadInfo() { }
 
@@ -13,7 +13,7 @@ public class MaskedDownloadInfo {
    * @param size
    * @param parts
    */
-  MaskedDownloadInfo(String name, Integer size, Integer parts) {
+  MaskedDownloadInfo(String name, Long size, Long parts) {
     this.name = name;
     this.size = size;
     this.parts = parts;
@@ -27,19 +27,19 @@ public class MaskedDownloadInfo {
     this.name = name;
   }
 
-  public Integer getSize() {
+  public Long getSize() {
     return size;
   }
 
-  public void setSize(Integer size) {
+  public void setSize(Long size) {
     this.size = size;
   }
 
-  public Integer getParts() {
+  public Long getParts() {
     return parts;
   }
 
-  public void setParts(Integer parts) {
+  public void setParts(Long parts) {
     this.parts = parts;
   }
 
