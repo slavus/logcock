@@ -1,36 +1,8 @@
 'use strict';
 define(function(require) {
-  /*
-
-     $start.onclick = () => {
-          const url = 'https://d8d913s460fub.cloudfront.net/videoserver/cat-test-video-320x240.mp4'
-          const fileStream = streamSaver.createWriteStream('cat.mp4')
-
-          fetch(url).then(res => {
-            const readableStream = res.body
-
-            // more optimized
-            if (window.WritableStream && readableStream.pipeTo) {
-              return readableStream.pipeTo(fileStream)
-                .then(() => console.log('done writing'))
-            }
-
-            window.writer = fileStream.getWriter()
-
-            const reader = res.body.getReader()
-            const pump = () => reader.read()
-              .then(res => res.done
-                ? writer.close()
-                : writer.write(res.value).then(pump))
-
-            pump()
-          })
-        }
-  */
 
   var $ = require('jquery');
   $(document).ready(function() {
-    console.log("radi");
     $(".masked-download").click(function(e) {
       e.preventDefault();
 
@@ -52,14 +24,14 @@ define(function(require) {
         var writer = fileStream.getWriter();
 
         var repeatDownload = function(r) {
+          count++;
+          console.log("Downloaded part: " + count + " from: " + parts)
           var data = encode(r.token);
           data && writer.write(data)
-          count++;
           if (count < parts) {
-            console.log("Sad je " + count + " od " +parts)
             $.get(url + "?part=" + count, repeatDownload);
           } else {
-            console.log("zatvaram writera")
+            console.log("Download finished. Closing writer.")
             writer.close();
           }
 

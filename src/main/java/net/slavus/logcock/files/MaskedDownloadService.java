@@ -32,8 +32,7 @@ public class MaskedDownloadService {
   }
 
   private void deleteB64AtEnd(Integer part, FileSystemResource fileSystemResource) {
-    System.out.println("SPLIT_SIZE*part:" + SPLIT_SIZE * part + " File len:" + fileSystemResource.getFile().length());
-    if ((SPLIT_SIZE * part+1) >= fileSystemResource.getFile().length()) {
+    if ((SPLIT_SIZE * (part+1)) >= fileSystemResource.getFile().length()) {
       fileSystemResource.getFile().delete();
     }
   }
@@ -59,6 +58,7 @@ public class MaskedDownloadService {
         fileSystemResourceB64.getFile().createNewFile();
         OutputStream wrap = Base64.getEncoder().wrap(fileSystemResourceB64.getOutputStream());
         IOUtils.copy(fileSystemResourceOrig.getInputStream(), wrap);
+        wrap.close();
       } catch (IOException e) {
         return ExceptionUtils.rethrow(e);
       }
