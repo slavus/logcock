@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +33,12 @@ public class FilesController {
 
   @Autowired
   private LogcockProperties properties;
+
+  @Autowired
+  private ServerProperties serverProperties;
+
+  @Autowired
+  Files files;
 
   @GetMapping("/")
   public String index() {
@@ -56,6 +65,24 @@ public class FilesController {
     model.addAttribute("breadcrumbs", breadcrumbs(path, basePath));
     return "index";
   }
+
+
+  @ResponseBody
+  @GetMapping(path = "/b/{id}/{*webPath}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public List<String> jsonBrowseFolder(@PathVariable Integer id, @PathVariable String webPath, Model model, ServerHttpRequest req) {
+    String basePath = properties.getFolders().get(id).getBasePath();
+
+    String scheme = req.getURI().getScheme();
+    String host = req.getHeaders().getHost().toString();        // includes server name and server port
+
+    String serverPath = scheme + "://" + host + StringUtils.defaultString(serverProperties.getServlet().getContextPath());
+
+    String path = basePath + File.separator + webPath;
+    return fileList(path)
+        .stream().map(f->serverPath + "/d/" + id +  files.linkPath(f, basePath))
+        .collect(Collectors.toList());
+  }
+
 
   @GetMapping("/d/{id}/{*webPath}")
   @ResponseBody

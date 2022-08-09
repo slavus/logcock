@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,8 +19,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -99,7 +98,7 @@ public class FileTailer{
   }
 
   private List<String> readLastLines() throws IOException {
-    List<String> lines = Lists.newArrayList();
+    List<String> lines = new ArrayList<>();
 
     long fileLength = tailedFile.length();
     if (fileLength > lastKnownPosition) {
